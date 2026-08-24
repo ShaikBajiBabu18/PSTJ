@@ -1,0 +1,77 @@
+import java.io.*;
+import java.util.*;
+
+interface PerformOperation {
+    boolean check(int a);
+}
+
+class MyMath {
+
+    public PerformOperation isOdd() {
+        return (a) -> a % 2 != 0;
+    }
+
+    public PerformOperation isPrime() {
+        return (a) -> {
+            if (a < 2) {
+                return false;
+            }
+
+            for (int i = 2; i * i <= a; i++) {
+                if (a % i == 0) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+    }
+
+    public PerformOperation isPalindrome() {
+        return (a) -> {
+            int original = a;
+            int reverse = 0;
+
+            while (a > 0) {
+                reverse = reverse * 10 + a % 10;
+                a /= 10;
+            }
+
+            return original == reverse;
+        };
+    }
+}
+
+public class Solution {
+
+    public static void main(String[] args) throws IOException {
+
+        MyMath ob = new MyMath();
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        int T = Integer.parseInt(br.readLine());
+
+        while (T-- > 0) {
+
+            String[] parts = br.readLine().split(" ");
+
+            int condition = Integer.parseInt(parts[0]);
+            int number = Integer.parseInt(parts[1]);
+
+            PerformOperation op;
+
+            if (condition == 1) {
+                op = ob.isOdd();
+                System.out.println(op.check(number) ? "ODD" : "EVEN");
+
+            } else if (condition == 2) {
+                op = ob.isPrime();
+                System.out.println(op.check(number) ? "PRIME" : "COMPOSITE");
+
+            } else {
+                op = ob.isPalindrome();
+                System.out.println(op.check(number) ? "PALINDROME" : "NOT PALINDROME");
+            }
+        }
+    }
+}

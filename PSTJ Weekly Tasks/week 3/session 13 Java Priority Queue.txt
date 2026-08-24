@@ -1,0 +1,84 @@
+import java.util.*;
+
+class Student {
+    private int id;
+    private String name;
+    private double cgpa;
+
+    public Student(int id, String name, double cgpa) {
+        this.id = id;
+        this.name = name;
+        this.cgpa = cgpa;
+    }
+
+    public int getID() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getCGPA() {
+        return cgpa;
+    }
+}
+
+class Priorities {
+
+    public List<Student> getStudents(List<String> events) {
+
+        PriorityQueue<Student> pq = new PriorityQueue<>(
+            new Comparator<Student>() {
+                @Override
+                public int compare(Student s1, Student s2) {
+
+                    // Higher CGPA gets higher priority
+                    int cmp = Double.compare(s2.getCGPA(), s1.getCGPA());
+
+                    if (cmp != 0) {
+                        return cmp;
+                    }
+
+                    // If CGPA is same, name in alphabetical order
+                    cmp = s1.getName().compareTo(s2.getName());
+
+                    if (cmp != 0) {
+                        return cmp;
+                    }
+
+                    // If CGPA and name are same, smaller ID first
+                    return Integer.compare(s1.getID(), s2.getID());
+                }
+            }
+        );
+
+        for (String event : events) {
+
+            String[] data = event.split(" ");
+
+            if (data[0].equals("ENTER")) {
+
+                String name = data[1];
+                double cgpa = Double.parseDouble(data[2]);
+                int id = Integer.parseInt(data[3]);
+
+                pq.add(new Student(id, name, cgpa));
+
+            } else if (data[0].equals("SERVED")) {
+
+                if (!pq.isEmpty()) {
+                    pq.poll();
+                }
+            }
+        }
+
+        List<Student> result = new ArrayList<>();
+
+        while (!pq.isEmpty()) {
+            result.add(pq.poll());
+        }
+
+        return result;
+    }
+}
